@@ -10,7 +10,7 @@ This project aims to develop a machine learning approach for detecting depressio
 - `tests/`: Unit tests for project components
 - `results/`: Saved models, figures, and performance metrics
 
-## Installation
+## 0. Installation
 
 ### Prerequisites
 - Python 3.8+
@@ -45,14 +45,14 @@ pip install -r requirements.txt
 python main.py
 ```
 
-# Basic Pipeline Contorls
+# 1. Basic Pipeline Contorls
 
-## Run complete pipeline
+## 1.1. Run complete pipeline
 ```bash
 python main.py --all
 ```
 
-## Run specific stages only
+## 1.2. Run specific stages only
 ```bash
 python main.py --extract_features
 ```
@@ -65,38 +65,38 @@ python main.py --train_classifier
 ```bash
 python main.py --visualize
 ```
-## Run multiple stages together
+## 1.3. Run multiple stages together
 ```bash
 python main.py --extract_features --train_classifier
 ```
 
 
-# Common Combined Commands
+# 2. Common Combined Commands
 
-## Quick development cycle with cached features
+## 2.1. Quick development cycle with cached features
 ```bash
 python main.py --use_cached --train_classifier --model_type svm
 ```
 
-## Extract minimal features and train quickly
+## 2.2. Extract minimal features and train quickly
 ```bash
 python main.py --extract_features --parallel --selected_features mfcc --train_classifier
 ```
-## Full analysis with optimized feature extraction
+## 2.3. Full analysis with optimized feature extraction
 ```bash
 python main.py --extract_features --parallel --cache_features --cluster_features --use_pca --train_classifier --model_type rf --cross_validate --visualize
 ```
-## Create visualizations of feature space
+## 2.4. Create visualizations of feature space
 ```bash
 python main.py --use_cached --visualize_feature_space --interactive_viz --manifold_viz
 ```
-## Compare SVM and RF classifiers with cross-validation
+## 2.5. Compare SVM and RF classifiers with cross-validation
 ```bash
 python main.py --use_cached --compare_classifiers --classifier1 svm --classifier2 rf --cross_validate
 ```
 
 
-# Examples for Specific Tasks
+# 3. Examples for Specific Tasks
 
 ## Extract MFCC features using 4 parallel processes
 ```bash
@@ -120,38 +120,38 @@ python main.py --all --parallel --n_clusters 2 --model_type rf --visualize_featu
 ```
 
 
-# Data Sources Options
+# 4. Data Sources Options
 
-## Specify data directory
+## 4.1. Specify data directory
 ```bash
 python main.py --data_dir /path/to/data
 ```
-## Specify output directory
+## 4.2. Specify output directory
 ```bash
 python main.py --output_dir /path/to/results
 ```
 
-## Choose task type
+## 4.3. Choose task type
 ```bash
 python main.py --task reading
 ```
 ```bash
 python main.py --task interview
 ```
-## Set random seed
+## 4.4. Set random seed
 ```bash
 python main.py --random_seed 42
 ```
 
 
-# Feature Extraction Options
+# 5. Feature Extraction Options
 
-## Set audio sample rate
+## 5.1. Set audio sample rate
 ```bash
 python main.py --extract_features --sample_rate 16000
 ```
 
-## Set MFCC parameters
+## 5.2. Set MFCC parameters
 ```bash
 python main.py --extract_features --n_mfcc 20
 ```
@@ -159,7 +159,7 @@ python main.py --extract_features --n_mfcc 20
 python main.py --extract_features --mfcc_deltas
 ```
 
-## Performance optimization
+## 5.3. Performance optimization
 ```bash
 python main.py --extract_features --parallel
 ```
@@ -172,7 +172,7 @@ python main.py --extract_features --cache_features
 ```bash
 python main.py --extract_features --use_cached
 ```
-## Extract only specific features for speed
+## 5.4. Extract only specific features for speed
 ```bash
 python main.py --extract_features --selected_features mfcc
 ```
@@ -187,14 +187,14 @@ python main.py --extract_features --selected_features all
 ```
 
 
-# Clustering Options
+# 5. Clustering Options
 
-## Set number of clusters
+## 5.1. Set number of clusters
 ```bash
 python main.py --cluster_features --n_clusters 3
 ```
 
-## Dimensionality reduction
+## 5.2. Dimensionality reduction
 ```bash
 python main.py --cluster_features --use_pca
 ```
@@ -209,31 +209,31 @@ python main.py --cluster_features --tsne_perplexity 30.0
 ```
 
 
-# Feature Space Visualization Options
+# 6. Feature Space Visualization Options
 
-## Enable feature space visualization
+## 6.1. Enable feature space visualization
 ```bash
 python main.py --visualize_feature_space
 ```
 
-## Create interactive 3D visualization
+## 6.2. Create interactive 3D visualization
 ```bash
 python main.py --visualize_feature_space --interactive_viz
 ```
-## Create manifold visualization
+## 6.3. Create manifold visualization
 ```bash
 python main.py --visualize_feature_space --manifold_viz
 ```
-## Show speaker IDs in visualizations
+## 6.4. Show speaker IDs in visualizations
 ```bash
 python main.py --visualize_feature_space --show_speaker_ids
 ```
 
 
 
-# Classification Options
+# 7. Classification Options
 
-## Classifier selection
+## 7.1. Classifier selection
 ```bash
 python main.py --train_classifier --model_type svm
 ```
@@ -244,7 +244,7 @@ python main.py --train_classifier --model_type rf
 python main.py --train_classifier --model_type mlp
 ```
 
-## Training parameters
+## 7.2. Training parameters
 ```bash
 python main.py --train_classifier --test_size 0.2
 ```
@@ -255,12 +255,12 @@ python main.py --train_classifier --balance_method smote
 python main.py --train_classifier --balance_method undersample
 ```
 
-## Enable cross-validation
+## 7.3. Enable cross-validation
 ```bash
 python main.py --train_classifier --cross_validate
 ```
 
-## Compare classifiers
+## 7.4. Compare classifiers
 ```bash
 python main.py --compare_classifiers
 ```
