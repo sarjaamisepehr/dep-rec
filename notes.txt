@@ -1,0 +1,143 @@
+# Basic Pipeline Contorls
+
+# Run complete pipeline
+python main.py --all
+
+# Run specific stages only
+python main.py --extract_features
+python main.py --cluster_features
+python main.py --train_classifier
+python main.py --visualize
+
+# Run multiple stages together
+python main.py --extract_features --train_classifier
+
+#######################################################
+
+# Common Combined Commands
+
+# Quick development cycle with cached features
+python main.py --use_cached --train_classifier --model_type svm
+
+# Extract minimal features and train quickly
+python main.py --extract_features --parallel --selected_features mfcc --train_classifier
+
+# Full analysis with optimized feature extraction
+python main.py --extract_features --parallel --cache_features --cluster_features --use_pca --train_classifier --model_type rf --cross_validate --visualize
+
+# Create visualizations of feature space
+python main.py --use_cached --visualize_feature_space --interactive_viz --manifold_viz
+
+# Compare SVM and RF classifiers with cross-validation
+python main.py --use_cached --compare_classifiers --classifier1 svm --classifier2 rf --cross_validate
+
+####################################################
+
+# Examples for Specific Tasks
+
+# Extract MFCC features using 4 parallel processes
+python main.py --extract_features --selected_features mfcc --parallel --n_jobs 4
+
+# Train an SVM classifier on cached features
+python main.py --use_cached --train_classifier --model_type svm --cross_validate
+
+# Create a 3D visualization of the feature space
+python main.py --use_cached --visualize_feature_space --interactive_viz
+
+# Run K-means clustering with 3 clusters
+python main.py --use_cached --cluster_features --n_clusters 3 --use_pca
+
+# Full pipeline with visualization for a presentation
+python main.py --all --parallel --n_clusters 2 --model_type rf --visualize_feature_space --interactive_viz
+
+###########################################################
+
+# Data Sources Options
+
+# Specify data directory
+python main.py --data_dir /path/to/data
+
+# Specify output directory
+python main.py --output_dir /path/to/results
+
+# Choose task type
+python main.py --task reading
+python main.py --task interview
+
+# Set random seed
+python main.py --random_seed 42
+
+###############################################
+
+# Feature Extraction Options
+
+# Set audio sample rate
+python main.py --extract_features --sample_rate 16000
+
+# Set MFCC parameters
+python main.py --extract_features --n_mfcc 20
+python main.py --extract_features --mfcc_deltas
+
+# Performance optimization
+python main.py --extract_features --parallel
+python main.py --extract_features --n_jobs 4
+python main.py --extract_features --cache_features
+python main.py --extract_features --use_cached
+
+# Extract only specific features for speed
+python main.py --extract_features --selected_features mfcc
+python main.py --extract_features --selected_features logmel
+python main.py --extract_features --selected_features pwp
+python main.py --extract_features --selected_features all
+
+###################################################
+
+# Clustering Options
+
+# Set number of clusters
+python main.py --cluster_features --n_clusters 3
+
+# Dimensionality reduction
+python main.py --cluster_features --use_pca
+python main.py --cluster_features --pca_components 15
+python main.py --cluster_features --use_tsne
+python main.py --cluster_features --tsne_perplexity 30.0
+
+#################################################
+
+# Feature Space Visualization Options
+
+# Enable feature space visualization
+python main.py --visualize_feature_space
+
+# Create interactive 3D visualization
+python main.py --visualize_feature_space --interactive_viz
+
+# Create manifold visualization
+python main.py --visualize_feature_space --manifold_viz
+
+# Show speaker IDs in visualizations
+python main.py --visualize_feature_space --show_speaker_ids
+
+
+#############################################
+
+# Classification Options
+
+# Classifier selection
+python main.py --train_classifier --model_type svm
+python main.py --train_classifier --model_type rf
+python main.py --train_classifier --model_type mlp
+
+# Training parameters
+python main.py --train_classifier --test_size 0.2
+python main.py --train_classifier --balance_method smote
+python main.py --train_classifier --balance_method undersample
+
+# Enable cross-validation
+python main.py --train_classifier --cross_validate
+
+# Compare classifiers
+python main.py --compare_classifiers
+python main.py --compare_classifiers --classifier1 svm --classifier2 rf
+
