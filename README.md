@@ -69,7 +69,7 @@ python main.py --visualize
 ```bash
 python main.py --extract_features --train_classifier
 ```
-#######################################################
+
 
 # Common Combined Commands
 
@@ -94,7 +94,7 @@ python main.py --use_cached --visualize_feature_space --interactive_viz --manifo
 ```bash
 python main.py --use_cached --compare_classifiers --classifier1 svm --classifier2 rf --cross_validate
 ```
-####################################################
+
 
 # Examples for Specific Tasks
 
@@ -118,7 +118,7 @@ python main.py --use_cached --cluster_features --n_clusters 3 --use_pca
 ```bash
 python main.py --all --parallel --n_clusters 2 --model_type rf --visualize_feature_space --interactive_viz
 ```
-###########################################################
+
 
 # Data Sources Options
 
@@ -142,7 +142,7 @@ python main.py --task interview
 ```bash
 python main.py --random_seed 42
 ```
-###############################################
+
 
 # Feature Extraction Options
 
@@ -185,7 +185,7 @@ python main.py --extract_features --selected_features pwp
 ```bash
 python main.py --extract_features --selected_features all
 ```
-###################################################
+
 
 # Clustering Options
 
@@ -207,7 +207,7 @@ python main.py --cluster_features --use_tsne
 ```bash
 python main.py --cluster_features --tsne_perplexity 30.0
 ```
-#################################################
+
 
 # Feature Space Visualization Options
 
@@ -229,7 +229,7 @@ python main.py --visualize_feature_space --manifold_viz
 python main.py --visualize_feature_space --show_speaker_ids
 ```
 
-#############################################
+
 
 # Classification Options
 
