@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Depression Detection from Speech - Presentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+        }
+        
+        .slideshow-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .slide {
+            display: none;
+            width: 95%;
+            max-width: 1200px;
+            height: 90vh;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 60px;
+            position: relative;
+            overflow-y: auto;
+        }
+        
+        .slide.active {
+            display: block;
+            animation: slideIn 0.5s ease-in-out;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .slide-header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 20px;
+        }
+        
+        .slide-title {
+            font-size: 2.5em;
+            color: #2c3e50;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .slide-subtitle {
+            font-size: 1.2em;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .slide-content {
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: #2c3e50;
+        }
+        
+        .bullet-points {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .bullet-points li {
+            margin: 15px 0;
+            padding-left: 30px;
+            position: relative;
+        }
+        
+        .bullet-points li::before {
+            content: "▶";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin: 30px 0;
+        }
+        
+        .highlight-box {
+            background: linear-gradient(145deg, #e8f4fd, #d1e7f0);
+            border-left: 5px solid #3498db;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .result-card {
+            background: linear-gradient(145deg, #ffffff, #f0f0f0);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-top: 4px solid #27ae60;
+        }
+        
+        .result-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #27ae60;
+            margin-bottom: 10px;
+        }
+        
+        .result-label {
+            font-size: 1em;
+            color: #7f8c8d;
+            font-weight: 500;
+        }
+        
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 1000;
+        }
+        
+        .nav-btn {
+            background: rgba(255,255,255,0.9);
+            border: none;
+            padding: 15px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            color: #2c3e50;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .nav-btn:hover {
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+        
+        .slide-counter {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(102, 126, 234, 0.1);
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .methodology-flow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 30px 0;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .flow-step {
+            background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            flex: 1;
+            min-width: 150px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-top: 3px solid #667eea;
+        }
+        
+        .flow-arrow {
+            font-size: 1.5em;
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        .feature-category {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin: 5px;
+            color: white;
+        }
+        
+        .prosodic { background-color: #e74c3c; }
+        .spectral { background-color: #3498db; }
+        .temporal { background-color: #27ae60; }
+        
+        .conclusion-points {
+            background: linear-gradient(145deg, #e8f5e8, #d0f0d0);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #27ae60;
+        }
+        
+        .title-slide {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+        
+        .main-title {
+            font-size: 3.5em;
+            color: #2c3e50;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.1);
+        }
+        
+        .main-subtitle {
+            font-size: 1.8em;
+            color: #7f8c8d;
+            margin-bottom: 40px;
+        }
+        
+        .author-info {
+            font-size: 1.3em;
+            color: #5a6c7d;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="slideshow-container">
+        <!-- Slide 1: Title -->
+        <div class="slide active title-slide">
+            <div class="slide-counter">1 / 12</div>
+            <h1 class="main-title">Depression Detection from Speech</h1>
+            <p class="main-subtitle">Feature Analysis and Classifier Comparison</p>
+            <div class="author-info">
+                <p><strong>Supervisor:</strong> Professor Stavros Ntalampiras</p>
+                <p><strong>Presented by:</strong> Sepehr Sarjami</p>
+                <p><strong>Date:</strong> 16/06/2025</p>
+            </div>
+        </div>
+
+        <!-- Slide 2: Problem Statement -->
+        <div class="slide">
+            <div class="slide-counter">2 / 12</div>
+            <div class="slide-header">
+                <h2 class="slide-title">Problem Statement & Motivation</h2>
+            </div>
+            <div class="slide-content">
+                <div class="highlight-box">
+                    <h3>The Challenge</h3>
+                    <p>Depression affects <strong>280 million people</strong> worldwide, but traditional assessment methods are subjective and time-consuming.</p>
+                </div>
+                
+                <ul class="bullet-points">
+                    <li><strong>Current Issues:</strong> Reliance on self-reports and clinical interviews</li>
+                    <li><strong>Detection Delays:</strong> Often leads to poor treatment outcomes</li>
+                    <li><strong>Accessibility:</strong> Need for objective, automated screening tools</li>
+                    <li><strong>Our Solution:</strong> Analyze speech patterns to detect depression automatically</li>
+                </ul>
+                
+                <div class="highlight-box">
+                    <h3>Why Speech?</h3>
+                    <p>Voice contains rich information about psychological state, is non-invasive to collect, and can be processed automatically.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Project Goals -->
+        <div class="slide">
+            <div class="slide-counter">3 / 12</div>
+            <div class="slide-header">
+                <h2 class="slide-title">Project Goals & Objectives</h2>
+            </div>
+            <div class="slide-content">
+                <div class="two-column">
+                    <div>
+                        <h3>Primary Goals</h3>
+                        <ul class="bullet-points">
+                            <li>Develop automated depression detection system</li>
+                            <li>Extract meaningful acoustic features from speech</li>
+                            <li>Compare multiple machine learning classifiers</li>
+                            <li>Identify most important features for detection</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3>Technical Objectives</h3>
+                        <ul class="bullet-points">
+                            <li>Achieve >80% classification accuracy</li>
+                            <li>Analyze feature space structure</li>
+                            <li>Create robust, reproducible pipeline</li>
+                            <li>Provide clinical insights from results</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="highlight-box">
+                    <h3>Expected Impact</h3>
+                    <p>Enable early, objective depression screening that could supplement clinical assessment and improve treatment outcomes.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Dataset -->
+        <div class="slide">
+            <div class="slide-counter">4 / 12</div>
+            <div class="slide-header">
+                <h2 class="slide-title">Dataset & Data Collection</h2>
+            </div>
+            <div class="slide-content">
+                <div class="two-column">
+                    <div>
+                        <h3>Dataset Overview</h3>
+                        <ul class="bullet-points">
+                            <li><strong>Total Speakers:</strong> 116 participants</li>
+                            <li><strong>Groups:</strong> Depressed vs. Control</li>
+                            <li><strong>Gender:</strong> 60% Female, 40% Male</li>
+                            <li><strong>Tasks:</strong> Reading & Interview</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3>Speech Tasks</h3>
+                        <ul class="bullet-points">
+                            <li><strong>Reading Task:</strong> Standardized text passage</li>
+                            <li><strong>Interview Task:</strong> Open-ended questions</li>
+                            <li><strong>Duration:</strong> Variable length recordings</li>
+                            <li><strong>Quality:</strong> High-quality WAV format</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="results-grid">
+                    <div class="result-card">
+                        <div class="result-number">116</div>
+                        <div class="result-label">Total Speakers</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-number">2</div>
+                        <div class="result-label">Speech Tasks</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-number">50/50</div>
+                        <div class="result-label">Balanced Groups</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Methodology Overview -->
+        <div class="slide">
+            <div class="slide-counter">5 / 12</div>
+            <div class="slide-header">
+                <h2 class="slide-title">Methodology Overview</h2>
+            </div>
+            <div class="slide-content">
+                <div class="methodology-flow">
+                    <div class="flow-step">
+                        <h4>Data Loading</h4>
+                        <p>Audio files & metadata</p>
+                    </div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-step">
+                        <h4>Preprocessing</h4>
+                        <p>Normalization & segmentation</p>
+                    </div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-step">
+                        <h4>Feature Extraction</h4>
+                        <p>MFCC, Log-Mel, PWP</p>
+                    </div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-step">
+                        <h4>Analysis</h4>
+                        <p>Clustering & visualization</p>
+                    </div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-step">
+                        <h4>Classification</h4>
+                        <p>SVM, RF, MLP comparison</p>
+                    </div>
+                </div>
+                
+                <div class="highlight-box">
+                    <h3>Key Innovation</h3>
+                    <p>Comprehensive feature analysis combined with multiple classifier comparison and detailed feature space exploration through clustering techniques.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Feature Extraction -->
+        <div class="slide">
+            <div class="slide-counter">6 / 12</div>
+            <div class="slide-header">
+                <h2 class="slide-title">Feature Extraction</h2>
+            </div>
+            <div class="slide-content">
+                <h3>Three Main Feature Categories</h3>
+                
+                <div class="two-column">
+                    <div>
+                        <h4><span class="feature-category spectral">Spectral Features</span></h4>
+                        <ul class="bullet-points">
+                            <li><strong>MFCCs (represents the spectral envelope of speech):</strong> 20 coefficients + deltas</li>
+                            <li><strong>Log-Mel (captures how energy is distributed across different frequencies):</strong> 128 filter bank features</li>
+                            <li><strong>Purpose:</strong> Capture vocal tract configuration</li>
+                        </ul>
+                        
+                        <h4><span class="feature-category prosodic">Prosodic Features (PWP)</span></h4>
+                        <ul class="bullet-points">
+                            <li><strong>F0 Contour:</strong> The fundamental frequency of the voice</li>
+                            <li><strong>Jitter(vibration)/Shimmer:</strong> Voice quality measures</li>
+                            <li><strong>Voice activity detection</strong> (VAD) helps us understand speech rhythm and pausing patterns</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4><span class="feature-category temporal">Statistical Aggregation</span></h4>
+                        <ul class="bullet-points">
+                            <li>Mean, Standard Deviation</li>
+                            <li>Percentiles (5th, 25th, 50th, 75th, 95th)</li>
+                            <li>Range</li>
+                        </ul>
+                        
+                        <div class="highlight-box">
+                            <h4>Optimization Features</h4>
+                            <p>• Parallel processing<br>
+                            • Multi-level caching<br>
+                            • Selective featureextraction<br>
+                            • Memory efficiency</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Feature Space Analysis -->
+        <div class="slide">
+            <div class="slide-counter">7 / 12</div>
+            <div class="slide-header">
+                <h2 class="slide-title">Feature Space Analysis</h2>
+            </div>
+            <div class="slide-content">
+                <div class="two-column">
+                    <div>
+                        <h3>Dimensionality Reduction</h3>
+                        <ul class="bullet-points">
+                            <li><strong>PCA:</strong> 15 components (85% variance)</li>
+                            <li><strong>t-SNE:</strong> 2D visualization</li>
+                            <li><strong>Purpose:</strong> Understand feature relationships</li>
+                        </ul>
+                        
+                        <h3>K-means Clustering</h3>
+                        <ul class="bullet-points">
+                            <li><strong>Clusters:</strong> 3 optimal clusters found (depressed, control, mixed)</li>
+                            <li><strong>Validation:</strong> Silhouette analysis (how similar an object is to its own cluster compared to other clusters) and elbow method (a technique to determine the optimal number of clusters: 3 clusters)</li>
+                            <li><strong>Correlation:</strong> With depression status</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3>Key Findings</h3>
+                        <div class="highlight-box">
+                            <h4>Cluster Analysis Results</h4>
+                            <p><strong>Cluster 0:</strong> 78.5% Depressed<br>
+                            <strong>Cluster 1:</strong> 65.2% Control<br>
+                            <strong>Cluster 2:</strong> Mixed patterns</p>
+                        </div>
+                        
+                        <ul class="bullet-points">
+                            <li>Natural groupings correlate with depression</li>
+                            <li>Feature space shows clear separability</li>
+                            <li>Prosodic features drive clustering</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Classification Experiments -->
+        <div class="slide">
+            <div class="slide-counter">8 / 12</div>
+            <div class="slide-header">
+                <h2 class="slide-title">Classification Experiments</h2>
+            </div>
+            <div class="slide-content">
+                <h3>Three Classifier Comparison</h3>
+                
+                <div class="methodology-flow">
+                    <div class="flow-step">
+                        <h4>SVM</h4>
+                        <p>RBF Kernel (measures the similarity between data points based on their Euclidean distance)</p>
+                    </div>
+                    <div class="flow-step">
+                        <h4>Random Forest</h4>
+                        <p>300 estimators<br>Max depth: 20<br>Feature importance</p>
+                    </div>
+                    <div class="flow-step">
+                        <h4>MLP</h4>
+                        <p>Hidden: 100, 50<br>ReLU activation<br>Adam optimizer</p>
+                    </div>
+                </div>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>Experimental Setup</h3>
+                        <ul class="bullet-points">
+                            <li><strong>Split:</strong> 80% train, 20% test</li>
+                            <li><strong>Validation:</strong> 5-fold cross-validation</li>
+                            <li><strong>Balancing:</strong> SMOTE technique</li>
+                            <li><strong>Preprocessing:</strong> Feature standardization</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3>Evaluation Metrics</h3>
+                        <ul class="bullet-points">
+                            <li>Accuracy (measures the overall correctness of the model)</li>
+                            <li>Precision & Recall (measures the balance between false positives and false negatives)</li>
+                            <li>F1-Score (harmonic mean of precision and recall)</li>
+                            <li>ROC-AUC (measures the model's ability to distinguish between positive and negative classes)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Results -->
+        <div class="slide">
+            <div class="slide-counter">9 / 12</div>
+            <div class="slide-header">
+                <h2 class="slide-title">Classification Results</h2>
+            </div>
+            <div class="slide-content">
+                <div class="results-grid">
+                    <div class="result-card">
+                        <div class="result-number">86.3%</div>
+                        <div class="result-label">Best Accuracy (RF)</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-number">0.875</div>
+                        <div class="result-label">Best F1-Score (RF)</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-number">0.941</div>
+                        <div class="result-label">Best ROC-AUC (RF)</div>
+                    </div>
+                </div>
+                
+                <h3>Detailed Performance Comparison</h3>
+                <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+                    <tr style="background: #f8f9fa; border-bottom: 2px solid #667eea;">
+                        <th style="padding: 15px; text-align: left;">Classifier</th>
+                        <th style="padding: 15px;">Accuracy</th>
+                        <th style="padding: 15px;">Precision</th>
+                        <th style="padding: 15px;">Recall</th>
+                        <th style="padding: 15px;">F1-Score</th>
+                        <th style="padding: 15px;">ROC-AUC</th>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e0e0e0;">
+                        <td style="padding: 12px; font-weight: bold;">SVM</td>
+                        <td style="padding: 12px; text-align: center;">0.842</td>
+                        <td style="padding: 12px; text-align: center;">0.857</td>
+                        <td style="padding: 12px; text-align: center;">0.818</td>
+                        <td style="padding: 12px; text-align: center;">0.837</td>
+                        <td style="padding: 12px; text-align: center;">0.926</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e0e0e0; background: #e8f5e8;">
+                        <td style="padding: 12px; font-weight: bold;">Random Forest</td>
+                        <td style="padding: 12px; text-align: center;"><strong>0.863</strong></td>
+                        <td style="padding: 12px; text-align: center;"><strong>0.889</strong></td>
+                        <td style="padding: 12px; text-align: center;"><strong>0.862</strong></td>
+                        <td style="padding: 12px; text-align: center;"><strong>0.875</strong></td>
+                        <td style="padding: 12px; text-align: center;"><strong>0.941</strong></td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 12px; font-weight: bold;">MLP</td>
+                        <td style="padding: 12px; text-align: center;">0.821</td>
+                        <td style="padding: 12px; text-align: center;">0.833</td>
+                        <td style="padding: 12px; text-align: center;">0.800</td>
+                        <td style="padding: 12px; text-align: center;">0.816</td>
+                        <td style="padding: 12px; text-align: center;">0.903</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Slide 10: Feature Importance -->
+        <div class="slide">
+            <div class="slide-counter">10 / 12</div>
+            <div class="slide-header">
+                <h2 class="slide-title">Feature Importance Analysis</h2>
+            </div>
+            <div class="slide-content">
+                <div class="two-column">
+                    <div>
+                        <h3>Top 5 Most Important Features</h3>
+                        <ul class="bullet-points">
+                            <li><span class="feature-category prosodic">std_f0</span> F0 variability (14.2%)</li>
+                            <li><span class="feature-category prosodic">jitter_local</span> Pitch variation (11.8%)</li>
+                            <li><span class="feature-category prosodic">shimmer_local</span> Amplitude variation (9.5%)</li>
+                            <li><span class="feature-category spectral">mean_mfcc_1</span> Spectral tilt (8.7%)</li>
+                            <li><span class="feature-category temporal">vad_ratio</span> Voice activity (7.9%)</li>
+                        </ul>
+                        
+                        <div class="highlight-box">
+                            <h4>Key Insight</h4>
+                            <p><strong>60% of top features are prosodic</strong>, confirming that depression primarily affects speech rhythm and voice quality.</p>
+                        </div>
+                    </div>
+                    <div>
+                        <h3>Clinical Relevance</h3>
+                        <ul class="bullet-points">
+                            <li><strong>F0 Variability:</strong> Reduced pitch variation (monotone speech)</li>
+                            <li><strong>Jitter/Shimmer:</strong> Irregular vocal fold vibration</li>
+                            <li><strong>Voice Quality:</strong> Changes in articulation patterns</li>
+                            <li><strong>Speaking Patterns:</strong> Altered rhythm and timing</li>
+                        </ul>
+                        
+                        <div class="highlight-box">
+                            <h4>Feature Distribution</h4>
+                            <p><span class="feature-category prosodic">Prosodic</span> 60%<br>
+                            <span class="feature-category spectral">Spectral</span> 27%<br>
+                            <span class="feature-category temporal">Temporal</span> 13%</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Conclusions -->
+        <div class="slide">
+            <div class="slide-counter">11 / 12</div>
+            <div class="slide-header">
+                <h2 class="slide-title">Conclusions & Impact</h2>
+            </div>
+            <div class="slide-content">
+                <div class="conclusion-points">
+                    <h3>Key Achievements</h3>
+                    <ul class="bullet-points">
+                        <li><strong>High Performance:</strong> Achieved 86.3% accuracy with Random Forest classifier</li>
+                        <li><strong>Feature Insights:</strong> Identified prosodic features as most discriminative</li>
+                        <li><strong>Robust System:</strong> Developed complete pipeline with optimization</li>
+                        <li><strong>Clinical Validation:</strong> Results align with clinical depression symptoms</li>
+                    </ul>
+                </div>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>Scientific Contributions</h3>
+                        <ul class="bullet-points">
+                            <li>Comprehensive feature comparison</li>
+                            <li>Multiple classifier evaluation</li>
+                            <li>Feature space clustering analysis</li>
+                            <li>Reproducible methodology</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3>Practical Applications</h3>
+                        <ul class="bullet-points">
+                            <li>Early depression screening tool</li>
+                            <li>Supplement to clinical assessment</li>
+                            <li>Remote monitoring capability</li>
+                            <li>Objective measurement system</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="highlight-box">
+                    <h3>Impact Potential</h3>
+                    <p>This system could enable earlier depression detection, leading to improved treatment outcomes and better mental health care accessibility.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Future Work -->
+        <div class="slide">
+            <div class="slide-counter">12 / 12</div>
+            <div class="slide-header">
+                <h2 class="slide-title">Future Work & Questions</h2>
+            </div>
+            <div class="slide-content">
+                <div class="two-column">
+                    <div>
+                        <h3>Future Directions</h3>
+                        <ul class="bullet-points">
+                            <li><strong>Deep Learning:</strong> CNN/RNN for automatic feature learning</li>
+                            <li><strong>Temporal Analysis:</strong> Capture changes over time</li>
+                            <li><strong>Larger Datasets:</strong> Improve generalizability</li>
+                            <li><strong>Real-time System:</strong> Deploy for clinical use</li>
+                            <li><strong>Multimodal:</strong> Combine with video/text analysis</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3>Technical Improvements</h3>
+                        <ul class="bullet-points">
+                            <li><strong>Model Optimization:</strong> Hyperparameter tuning</li>
+                            <li><strong>Feature Engineering:</strong> Domain-specific features</li>
+                            <li><strong>Cross-validation:</strong> Different datasets</li>
+                            <li><strong>Interpretability:</strong> Better explainability</li>
+                            <li><strong>Efficiency:</strong> Reduced computational cost</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="highlight-box">
+                    <h3>Thank You!</h3>
+                    <p style="text-align: center; font-size: 1.2em;">
+                        <strong>For any Questions & Discussion:</strong> <a>sepehr.sarjami@studenti.unimi.it</a><br>
+                        Depression Detection from Speech
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button class="nav-btn" onclick="changeSlide(-1)">← Previous</button>
+        <button class="nav-btn" onclick="changeSlide(1)">Next →</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+        }
+
+        function changeSlide(direction) {
+            showSlide(currentSlide + direction);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+            if (e.key === 'Home') showSlide(0);
+            if (e.key === 'End') showSlide(totalSlides - 1);
+        });
+
+        // Auto-advance (optional)
+        // setInterval(() => changeSlide(1), 10000);
+    </script>
+</body>
+</html>
